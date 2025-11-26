@@ -1,30 +1,19 @@
-// 保守版脚本 - 最小化修改
+// 备份恢复脚本 - 紧急情况下使用
 (function() {
     'use strict';
     
     const url = $request.url;
-    if (!url.includes("/api/User/Info")) {
-        $done({});
+    let body = $response.body;
+    
+    // 如果是登录相关API，确保不修改
+    if (url.includes("/api/User/Login") || 
+        url.includes("/api/User/Register") ||
+        url.includes("/api/Auth")) {
+        console.log("登录相关API，直接通过");
+        $done({body});
         return;
     }
     
-    let body = $response.body;
-    try {
-        let data = JSON.parse(body);
-        
-        // 只修改最基础的VIP状态
-        if (data.result) {
-            data.result.isvip = true;
-            data.result.viptype = 1; // 使用最低的VIP等级
-            // 不修改expiretime，让应用使用原始值
-        }
-        
-        body = JSON.stringify(data);
-        console.log("基础VIP状态已设置");
-        
-    } catch (e) {
-        console.log("保守脚本执行失败: " + e);
-    }
-    
+    // 其他API处理...
     $done({body});
 })();
