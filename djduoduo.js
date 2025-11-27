@@ -1,28 +1,35 @@
-// 文件名: dianyinduoduo_debug.js
-// 描述: 点音多多调试脚本 - 发现所有相关请求
+// 文件名: dianyinduoduo_discover.js
+// 描述: 点音多多接口发现脚本
 
 const url = $request.url;
-const host = $request.host;
+const method = $request.method;
 
-// 记录所有点音多多的请求
-if (host.includes('dianyinduoduo.com')) {
-    console.log("📡 捕获请求:", url);
-    console.log("方法:", $request.method);
-    console.log("请求头:", JSON.stringify($request.headers));
+// 记录所有相关请求
+console.log("🔍 请求URL:", url);
+console.log("📝 请求方法:", method);
+
+if ($response.body) {
+    const body = $response.body;
+    console.log("📦 响应长度:", body.length);
     
-    if ($response.body) {
-        const bodyStr = $response.body;
-        console.log("响应长度:", bodyStr.length);
-        console.log("响应预览:", bodyStr.substring(0, 500));
+    // 检查是否包含用户信息关键词
+    const userKeywords = ['user', 'member', 'vip', 'login', 'uid', 'User', 'Member', 'VIP', 'is_login', 'vip_type'];
+    const hasUserInfo = userKeywords.some(keyword => 
+        body.toLowerCase().includes(keyword.toLowerCase())
+    );
+    
+    if (hasUserInfo) {
+        console.log("🎯 发现用户信息接口!");
+        console.log("📄 响应预览:", body.substring(0, 300));
         
-        // 检查是否包含用户信息关键词
-        const userKeywords = ['user', 'member', 'vip', 'login', 'uid', 'User', 'Member', 'VIP'];
-        const hasUserInfo = userKeywords.some(keyword => 
-            bodyStr.toLowerCase().includes(keyword.toLowerCase())
-        );
-        
-        if (hasUserInfo) {
-            console.log("🎯 这个响应可能包含用户信息!");
+        // 如果是JSON格式，尝试解析
+        if (body.trim().startsWith('{') || body.trim().startsWith('[')) {
+            try {
+                const jsonData = JSON.parse(body);
+                console.log("📊 JSON结构:", Object.keys(jsonData));
+            } catch (e) {
+                console.log("❌ JSON解析失败");
+            }
         }
     }
 }
