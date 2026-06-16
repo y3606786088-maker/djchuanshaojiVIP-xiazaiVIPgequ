@@ -1,4 +1,4 @@
-// 传啥机完整VIP解决方案 - 融合版
+// 串烧集完整VIP解决方案 - 融合版
 // 同时处理用户VIP状态和下载权限
 (function() {
     'use strict';
@@ -6,7 +6,7 @@
     const url = $request.url;
     let body = $response.body;
     
-    console.log("🎵 传啥机VIP脚本执行 - URL: " + url);
+    console.log("🎵 串烧集VIP脚本执行 - URL: " + url);
     
     try {
         let data = JSON.parse(body);
@@ -29,7 +29,7 @@
                 data.result.expiretime = currentTime + 31536000;
                 
                 // 增强显示信息
-                data.result.nickname = "VIP尊享会员";
+                data.result.nickname = "VIP";
                 data.result.age = "相伴 : 永久会员";
                 
                 // 下载相关权限
